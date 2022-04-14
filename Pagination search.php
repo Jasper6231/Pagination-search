@@ -9,23 +9,23 @@
 <body>
 
 
-<!-- 定位栏1  -->
+<!-- Location bar1  -->
 <div id="locationbar">
-<!-- 输入位置 -->
+<!-- Input location -->
 <form method="get">
 Position: <input class='positionInput' type='text' name='positionInput' id='positionInput' size='50' >
-<!-- 提交 -->
+<!-- Submit -->
 <input type="submit" name="subPosition" value="Submit">
 </form>
 
-<!-- 分页 -->
+<!-- Paging function -->
 <?php
-//数据库连接
+//Database connection
 $servername = "localhost";
 $username = "root";
 $password = "123456";
 $dbname = "XXX";
-// 检查连接
+// Check the connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 if (!$conn) 
   {
@@ -34,18 +34,18 @@ if (!$conn)
   echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
   exit;
   }
-//定义输入
+//Define input
 $positionInput=$_GET["positionInput"];
 $IDInput=$_GET["IDInput"];
-//确认总页数
+//Confirm total pages
 $ID=$_GET["ID"];
 $sql_totalID="SELECT count(*) from chart1";
 $totalresult=mysqli_query($conn,$sql_totalID);
 $total=mysqli_fetch_row($totalresult)[0];
-//每页1条
+//Each page 1 the information
 $num=1;
 $totalID=ceil($total/$num);
-//ID范围
+//ID range
 if($ID>$totalID){
     $ID=$totalID;
 }
@@ -53,25 +53,25 @@ if($ID<1){
     $ID=1;
 }
 $start=($ID-1)*1;
-//搜索条件 
-//判断是否提交
+//Search criteria 
+//Judge whether to submit
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     if(!empty($_GET['positionInput'])){
-        //检查position是否为数字
+        //Check if position is a number
             if (is_numeric($positionInput)) { 
                  $positionInput_correct = (floor($positionInput/1000)+1)*1000;
-              //判断是否被1000整除                                   
+              //Determine whether divisible by 1000                                   
                if ($positionInput_correct > 1000){
-                 //确实输入
+                 //Actual input
                    $position = $positionInput_correct;
-                  //position查询ID语句
+                  //Position query ID statement
                   $sql_position_find_ID="SELECT b.ID from chart2 a right join chart1 b on a.path_name = b.path_name where a.position = $position";
-                  //确定当前ID*******
+                  //Determine current ID*******
                     $result__position_find_ID = mysqli_query($conn,$sql_position_find_ID);
                     $row__position_find_ID = mysqli_fetch_assoc($result__position_find_ID);
                     if (!empty($row__position_find_ID)) {
                          $ID = $row__position_find_ID["ID"];}
-                     // 报错：没有position查询ID结果
+                     // An error: no position query ID result
                       else{
                         echo '<script language="javascript">';
                         echo 'alert("Sorry, there is no peak map for your query.")';
@@ -79,30 +79,30 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     } 
                    }
                   }
-              // 报错：没有输入数字
+              // Error: no number entered
                 else{
                   echo '<script language="javascript">';
                   echo 'alert("Sorry, only number allowed.")';
                   echo '</script>'; 
                  }
                 }  
-                 //检查ID输入               
+                 //Check ID input               
               elseif(!empty($_GET['IDInput'])){
-            //检查ID是否为数字
+            //Check if the ID is numeric
               if (is_numeric($IDInput)) { 
-                  //判断ID是否在范围内
+                  //Determine if the ID is in range
                    if ( $IDInput >0 and $IDInput < $totalID){
-                     //确认输入
+                     //Confirm input
                        $ID = $IDInput;
                     }
-                       // 报错：ID范围错误
+                       // Error reporting: ID range error
                         else {
                         echo '<script language="javascript">';
                         echo 'alert("Sorry, page range is error.")';
                         echo '</script>';
                        }
                      } 
-                     // 报错：没有输入数字
+                     // Error: no number entered
                  else{
                       echo '<script language="javascript">';
                       echo 'alert("Sorry, only number allowed.")';
@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     }
                 }
             }       
-//最终结果输出
+//Final result output
 $sql_img_output="SELECT * from chart1 where ID = $ID";
 $result=mysqli_query($conn,$sql_img_output);
 while($res=mysqli_fetch_assoc($result)){
@@ -146,12 +146,12 @@ mysqli_close($conn);
 <TR><TD><?php echo "{$ID}/{$totalID}"?></TD></TR>
 </TABLE>
 
-<!-- 定位栏2  -->
+<!-- Location bar2  -->
 <div id="locationbar">
 <form method="get">
-<!-- 输入ID -->
+<!-- Input ID -->
 Page: <input class='IDInput' type='text' name='IDInput' id='IDInput' size='5' >
-<!-- 提交 -->
+<!-- Submit -->
 <input type="submit" name="subID" value="Jump">
 </form>
 
